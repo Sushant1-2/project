@@ -1,39 +1,55 @@
 import React from "react";
 import Cart from "../Cart";
 import totalAmount from "../../ComponentFunction/totalAmount";
-const CheckOut = ({ visible, setVisible, cartData }) => {
+
+function CheckOutModal({ visible, setVisible, cartData }) {
   return (
     <div
       className={`${
         visible ? "flex" : "hidden"
-      } inset-0 fixed bg-rose-500 justify-center items-center`}
+      } fixed inset-0 z-50 items-center justify-center  bg-opacity-40 backdrop-blur-sm`}
       onClick={() => setVisible(false)}
     >
-      <div className="w-70 max-h-[80vh] p-2 rounded-xl bg-white border-gray-500 overflow-auto">
-        <div className="text-center font-semibold text-orange-600 ">
-          CheckOut
+      <div
+        className="w-[90%] max-w-lg max-h-[80vh] p-6 rounded-2xl bg-white shadow-2xl flex flex-col relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="text-center font-bold text-2xl text-orange-500 mb-4">
+          Checkout
         </div>
-     
-      <div>
-        <div className="text-lg text-gray-600 font-medium">item</div>
-        {cartData.map((item) => (
-          <div
-            className="flex justify-between text-sm text-gray-600"
-            key={item.id}
-          >
-            <div className="flex-1 font-bold">{item.name}</div>
-            <div className="w-16">{item.quanity}</div>
-            <div className="w-20 ">{item.caloriesPerServing}</div>
-          </div>
-        ))}
-        <div className="flex justify-between font-medium text-gray-900">
-          <div>Total</div>
-          <div className="w-16 text-end">${totalAmount(cartData)}</div>
+
+        <div className="flex justify-between px-3 text-gray-500 text-sm font-medium border-b pb-2">
+          <span className="w-1/2">Item</span>
+          <span className="w-1/4 text-center">Qty</span>
+          <span className="w-1/4 text-right">Price</span>
         </div>
-      </div>
+
+        <div className="overflow-auto flex-grow py-2 space-y-3">
+          {cartData.map((item) => (
+            <div
+              key={item.id}
+              className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-md"
+            >
+              <div className="w-1/2 text-gray-800 font-medium truncate">
+                {item.name}
+              </div>
+              <div className="w-1/4 text-center text-gray-600">
+                x{item.quantity}
+              </div>
+              <div className="w-1/4 text-right font-semibold text-gray-700">
+                ${item.caloriesPerServing}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-between items-center border-t pt-4 mt-4 text-lg font-semibold">
+          <div>Total:</div>
+          <div>${totalAmount(cartData)}</div>
+        </div>
       </div>
     </div>
   );
-};
+}
 
-export default CheckOut;
+export default CheckOutModal;
