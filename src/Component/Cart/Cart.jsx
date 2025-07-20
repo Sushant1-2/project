@@ -28,7 +28,7 @@ const Cart = () => {
           <div>${totalAmount(cartData)}</div>
         </div>
       </div>
-      <CheckOut visible={visible}  setVisible={setVisible} />
+      <CheckOut visible={visible}  setVisible={setVisible} cartData={cartData} />
     </div>
   );
 };
