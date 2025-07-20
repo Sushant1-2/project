@@ -8,7 +8,10 @@ import CheckOut from "./Component/CheckOut";
 const Cart = () => {
   const [visible, setVisible] = useState(false);
   let data = localStorage.getItem("cart1");
-  const [cartData, setCartData] = useState(JSON.parse(data));
+ const [cartData, setCartData] = useState(
+   JSON.parse(localStorage.getItem("cart1")) || []
+ );
+
   return (
     <div className="flex flex-col h-[100vh]">
       <Navbar />
