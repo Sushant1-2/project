@@ -3,7 +3,7 @@ import { FaSearch, FaShoppingCart } from "react-icons/fa";
 
 const Navbar = () => {
   return (
-    <div className="flex justify-between items-center bg-yellow-300 p-2 md:p-4 rounded-md">
+    <div className="sticky top-0 z-50 flex justify-between items-center bg-yellow-300 p-2 md:p-4 rounded-md shadow-md">
       <div className="flex items-center">
         <img
           src="/food.png"
