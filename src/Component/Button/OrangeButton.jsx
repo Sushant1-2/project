@@ -1,11 +1,15 @@
-import React from 'react'
+import React from "react";
 
-const OrangeButton = ({title,... props}) => {
+const OrangeButton = ({ title, ...props }) => {
   return (
-    <div  {...props} className="bg-rose-500 text-white font-semibold py-2 px-3 w-fit rounded-xl hover:bg-red-900 shadow-sm shadow-red-500/50 crusor-pointer">
-     {title}
-    </div>
-  )
-}
+    <button
+      {...props}
+      className="bg-rose-600 text-white font-bold py-3 px-7 rounded-2xl shadow-lg
+        hover:bg-rose-700 hover:shadow-xl transform hover:scale-105 transition duration-300 cursor-pointer select-none"
+    >
+      {title}
+    </button>
+  );
+};
 
-export default OrangeButton
+export default OrangeButton;
