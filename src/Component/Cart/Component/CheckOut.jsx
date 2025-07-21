@@ -1,8 +1,9 @@
 import React from "react";
 import Cart from "../Cart";
 import totalAmount from "../../ComponentFunction/totalAmount";
+import UserDetail from "./UserDetail";
 
-function CheckOutModal({ visible, setVisible, cartData }) {
+const CheckOut=({ visible, setVisible, cartData })=> {
   return (
     <div
       className={`${
@@ -47,9 +48,12 @@ function CheckOutModal({ visible, setVisible, cartData }) {
           <div>Total:</div>
           <div>${totalAmount(cartData)}</div>
         </div>
+        <div>
+          <UserDetail />
+        </div>
       </div>
     </div>
   );
 }
 
-export default CheckOutModal;
+export default CheckOut;
