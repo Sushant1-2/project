@@ -1,75 +1,85 @@
 import React from "react";
-import { FaStar } from "react-icons/fa";
-import { IoCart } from "react-icons/io5";
+import StarCalc from "../component/StarCalc";
+import { LuDot } from "react-icons/lu";
+import AddToCart from "../../Button/AddToCart";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import OrangeButton from "../../Button/OrangeButton";
+import { useNavigate } from "react-router-dom";
 
-const ProductModal = ({ data, setShowModal, setCartBoolean, CartBoolean }) => {
-  const handleAddToCartFromModal = (e) => {
-    e.stopPropagation();
-    setCartBoolean((prev) => !prev);
+const ProductModal = ({
+  data,
+  setShowModal,
+  cartBoolean,
+  setCartBoolean,
+  addItemToCart,
+}) => {
+  const navigate = useNavigate();
+  const userData = JSON.parse(localStorage.getItem("userDetail"));
+
+  const navigateFunction = () => {
+    navigate("/product", { state: data });
   };
 
   return (
     <div
-      className="flex justify-center items-center bg-gray-100/90 fixed inset-0"
+      className="fixed inset-0 bg-gray-100/70 flex justify-center items-center z-50"
       onClick={() => setShowModal(false)}
     >
       <div
-        className="bg-white rounded-xl h-[60%] w-[65%] overflow-hidden flex"
+        className=" bg-white rounded-xl w-[65%] h-[60%] overflow-hidden flex"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-[40%] h-full relative">
-          <div className="absolute p-1 bg-orange-500 rounded-full top-2 left-2 cursor-pointer">
-            <IoMdArrowRoundBack onClick={() => setShowModal(false)} />
+          <div className="absolute p-1 bg-orange-500 rounded-full top-2 left-2 ">
+            <IoMdArrowRoundBack
+              color="white"
+              onClick={() => setShowModal(false)}
+            />
           </div>
-          <img
-            src={data.image}
-            alt={data.name}
-            className="bg-cover h-full w-full"
-          />
+          <img src={data.image} className="bg-cover h-full" />
         </div>
-        <div className="w-[60%] p-5 flex flex-col overflow-y-auto">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold">{data.name}</h2>
-            <div className="flex items-center">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <FaStar
-                  key={i}
-                  className={`text-yellow-400 mr-1 ${
-                    i < data.rating ? "" : "opacity-30"
-                  }`}
-                />
-              ))}
+        <div className=" flex-1 p-5 flex flex-col  justify-center gap-3 ">
+          <div className="flex items-center justify-between ">
+            <div className=" font-bold w-[60%] text-2xl text-gray-700">
+              {data.pName}
+            </div>
+            <div>
+              <StarCalc rating={Math.floor(Number(data.rating))} />
             </div>
           </div>
-
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-1">Description</h3>
-            <p className="text-gray-700">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            </p>
+          <div className="text-sm font-medium text-gray-500">
+            {data.description}
           </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-1">Ingredients</h3>
-            <ul className="list-disc list-inside text-gray-700">
-              {data.ingredients?.map((item, index) => (
-                <li key={index}>{item}</li>
+          <div className="overflow-auto flex-1">
+            <div className="font-medium text-xl text-gray-700 mb-3 ">
+              Ingredients:
+            </div>
+            <ul type="circle">
+              {data.features.map((item) => (
+                <div className="flex gap-3 text-sm text-gray-600" key={item}>
+                  <LuDot />
+                  <li>{item}</li>
+                </div>
               ))}
             </ul>
           </div>
-
-          <div className="flex items-center justify-between space-x-3 mb-3">
-            <div className="text-base font-bold text-black">Rs: 2000</div>
-            <button
-              className={`flex items-center gap-2 ${
-                CartBoolean ? "bg-green-500" : "bg-amber-400 hover:bg-amber-500"
-              } transition-colors text-black font-semibold px-4 py-2 rounded-xl`}
-              onClick={handleAddToCartFromModal}
-            >
-              <IoCart />
-              <span>{CartBoolean ? "Added to cart" : "Add to cart"}</span>
-            </button>
+          <div className="flex justify-between items-center ">
+            <div className="font-bold text-orange-500 text-2xl">
+              $ {data.price}
+            </div>
+            {userData.role == "admin" ? (
+              <OrangeButton
+                title={"Update"}
+                onClick={() => navigateFunction()}
+              />
+            ) : (
+              <AddToCart
+                cartBoolean={cartBoolean}
+                onClick={() => {
+                  setCartBoolean(true), addItemToCart();
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

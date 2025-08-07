@@ -1,59 +1,59 @@
 import React from "react";
 import totalAmount from "../../ComponentFunction/totalAmount";
-import UserDetail from "./UserDetail";
+import OrangeButton from "../../Button/OrangeButton";
+import { LuDot } from "react-icons/lu";
+import generateCartItem from "../../ComponentFunction/generateCartItem";
+import { useNavigate } from "react-router-dom";
+import addOrderApi from "../../Api/order/addOrderApi";
 
 const CheckOut = ({ visible, setVisible, cartData }) => {
+  const navigate = useNavigate();
+  const handelOrder = () => {
+    const tempData = {
+      totalAmount: totalAmount(cartData),
+      items: generateCartItem(cartData),
+    };
+    addOrderApi(tempData, navigate);
+  };
+
   return (
     <div
       className={`${
         visible ? "flex" : "hidden"
-      } fixed inset-0 z-50 items-center justify-center bg-white bg-opacity-30 backdrop-blur-md`}
+      } fixed inset-0 backdrop-blur-sm justify-center items-center`}
       onClick={() => setVisible(false)}
     >
       <div
-        className="w-[95%] max-w-5xl max-h-[80vh] p-6 rounded-3xl bg-white shadow-2xl flex relative overflow-auto"
+        className="w-96 max-h-[80vh] p-5 rounded-md border border-gray-400 bg-white overflow-auto flex flex-col shadow-xl shadow-black/50"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Left side: Cart summary */}
-        <div className="flex flex-col w-1/2 border-r border-orange-300 pr-6 max-h-full">
-          <div className="text-center font-extrabold text-3xl text-orange-500 mb-6 tracking-wide">
-            Checkout
-          </div>
-
-          <div className="flex justify-between px-4 text-gray-600 text-sm font-semibold border-b border-orange-300 pb-3">
-            <span className="w-1/2">Item</span>
-            <span className="w-1/4 text-center">Qty</span>
-            <span className="w-1/4 text-right">Price</span>
-          </div>
-
-          <div className="flex-grow py-3 space-y-4 scrollbar-thin scrollbar-thumb-orange-400 scrollbar-track-orange-100 overflow-auto max-h-[calc(80vh-150px)]">
-            {cartData.map((item) => (
-              <div
-                key={item.id}
-                className="flex justify-between items-center bg-orange-50 px-4 py-3 rounded-lg shadow-sm hover:bg-orange-100 transition"
-              >
-                <div className="w-1/2 text-gray-800 font-semibold truncate">
-                  {item.name}
-                </div>
-                <div className="w-1/4 text-center text-gray-700 font-medium">
-                  x{item.quantity}
-                </div>
-                <div className="w-1/4 text-right font-semibold text-gray-900">
-                  ${item.caloriesPerServing}
-                </div>
+        <div className="text-center font-semibold text-xl text-orange-500">
+          Checkout
+        </div>
+        <div>
+          <div className="text-lg text-gray-600 font-medium">Items:</div>
+          {cartData.map((item) => (
+            <div
+              className="flex justify-between text-sm text-gray-700 mt-0.5"
+              key={item._id}
+            >
+              <div className="flex-1 flex items-center font-medium">
+                <LuDot size={20} /> {item.pName}
               </div>
-            ))}
-          </div>
-
-          <div className="flex justify-between items-center border-t border-orange-300 pt-5 mt-5 text-xl font-bold text-gray-900">
-            <div>Total:</div>
-            <div>${totalAmount(cartData)}</div>
+              <div className="w-14">{item.quantity}</div>
+              <div className="w-16 text-end">{item.price}</div>
+            </div>
+          ))}
+          <div className="flex justify-between font-medium text-gray-800">
+            <div>Total</div>
+            <div className="w-16 text-end">${totalAmount(cartData)}</div>
           </div>
         </div>
-
-        {/* Right side: User form */}
-        <div className="w-1/2 pl-6 max-h-full overflow-visible">
-          <UserDetail />
+        <div className="flex justify-center border-t border-black my-2 pt-4">
+          <OrangeButton
+            title={"Proceed Checkout"}
+            onClick={() => handelOrder()}
+          />
         </div>
       </div>
     </div>

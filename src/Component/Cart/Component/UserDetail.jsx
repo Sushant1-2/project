@@ -1,9 +1,11 @@
 import React, { useRef, useState } from "react";
 import TextInput from "../../InputFields/TextInput";
 import OrangeButton from "../../Button/OrangeButton";
+import { useNavigate } from "react-router";
 
 function UserDetails() {
   const [err, setErr] = useState(0);
+  const navigate = useNavigate ();
   const [success, setSuccess] = useState(false);
   const name = useRef("");
   const phone = useRef("");
@@ -29,10 +31,11 @@ function UserDetails() {
       setErr(0);
       setSuccess(true);
 
-      // Hide success message after 3 seconds
+
+    
       setTimeout(() => setSuccess(false), 3000);
 
-      // Clear inputs
+     
       name.current.value = "";
       phone.current.value = "";
       address.current.value = "";
@@ -66,10 +69,10 @@ function UserDetails() {
         />
 
         <div className="flex justify-center mt-8">
-          <OrangeButton title="Process" onClick={handleProcess} />
+          <OrangeButton title="Proceed" onClick={handleProcess} />
         </div>
 
-        {/* Success message */}
+       
         <div
           className={`absolute top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-white font-semibold text-lg
   transition-all duration-500

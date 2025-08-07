@@ -17,7 +17,7 @@ const Cart = () => {
       <Navbar />
       <div className=" mx-5 space-y-6 flex-1 overflow-auto ">
         {cartData.map((item) => (
-          <CartCard data={item} key={item.id} setCartData={setCartData} />
+          <CartCard data={item} key={item._id} setCartData={setCartData} />
         ))}
       </div>
       <hr className="my-5" />
