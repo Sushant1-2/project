@@ -3,7 +3,7 @@ import SecureFetch from "../ApiConfiguration";
 
 const addProductApi = async (productDetail, setProductDetail) => {
   const request = await SecureFetch(
-    mainEndPoint+"/product",
+    mainEndPoint +"/product",
     "POST",
     {
       "content-type": "application/json",

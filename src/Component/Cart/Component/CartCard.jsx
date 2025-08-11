@@ -1,41 +1,115 @@
-import React from "react";
-import Navbar from "../../Navbar/Navbar";
-import StarCalc from "../../Product/component/StarCalc";
-import { BsFillTrash2Fill } from "react-icons/bs";
-import removeFromCart from "../../LocalStorage/removeFromCart";
-import Quantity from "./Quantity";
+import React, { useState } from "react";
+import { FaStar } from "react-icons/fa";
+import { IoCart } from "react-icons/io5";
+import ProductModal from "../../Product/Modal/ProductModal";
+import addToCart from "../../LocalStorage/addTocart";
+import { MdDelete } from "react-icons/md";
+import deleteProductApi from "../../Api/Auth/product/deleteProductApi";
+import ConfirmModal from "../../Button/ConformModal";
 
-const CartCard = ({ data, setCartData }) => {
+export const Card = ({ data }) => {
+  const userData = JSON.parse(localStorage.getItem("userDetail"));
+
+  const [showModal, setShowModal] = useState(false);
+  const [cartBoolean, setCartBoolean] = useState(false);
+  const [confirmData, setConfirmData] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (!cartBoolean) {
+      addToCart(data);
+      setCartBoolean(true);
+    }
+  };
+
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    setConfirmData({
+      isOpen: true,
+      title: "Delete Product?",
+      message:
+        "Are you sure you want to delete this product? This action cannot be undone.",
+      onConfirm: () => {
+        deleteProductApi({ id: data._id });
+        setConfirmData((prev) => ({ ...prev, isOpen: false }));
+      },
+    });
+  };
+
   return (
-    <div className="border bg-orange-400 overflow-hidden rounded-md flex flex-col md:flex-row hover:border-orange-600 hover:bg-orange-500 hover:shadow-md hover:shadow-black/50 relative w-full">
+    <>
       <div
-        className="h-10 w-10 flex justify-center items-center absolute rounded-full top-2 right-2 boder bg-red-500"
-        onClick={() => removeFromCart(data, setCartData)}
+        className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden m-4 p-4 transition-transform duration-300 hover:scale-105 cursor-pointer relative"
+        onClick={() => setShowModal(true)}
       >
-        <BsFillTrash2Fill className="text-white text-xl" />
-      </div>
-      <div className="flex justify-center md:justify-start">
-        <img src={data.image} alt="" className="h-40 p-4 w-40 object-contain" />
-      </div>
-      <div className="flex flex-col md:flex-row p-4 justify-between w-full items-start md:items-center gap-4">
-        <div className="space-y-2">
-          <p className="text-2xl md:text-3xl font-bold text-black">
-            {data.pName}
-          </p>
-          <p className="text-xl md:text-2xl font-medium text-gray-400">
-            {/* {data.tags[0]} */}
-          </p>
-          <Quantity data={data} setCartData={setCartData} />
+        {userData.role === "admin" && (
+          <div
+            className="w-[20px] h-[20px] bg-red-500 rounded-full flex justify-center items-center absolute top-1 right-1"
+            onClick={handleDeleteClick}
+          >
+            <MdDelete className="text-xl text-white" />
+          </div>
+        )}
+
+        <div className="flex justify-center mb-3">
+          <img
+            src={data.image}
+            alt={data.pName}
+            className="h-44 w-44 object-cover rounded-lg"
+          />
         </div>
-        <div className="space-y-2 md:text-right">
-          <StarCalc rating={Math.floor(Number(data.rating))} />
-          <p className="text-xl md:text-2xl text-white">
-            Price : Rs {data.price}
-          </p>
+
+        <div className="text-center text-sm text-gray-500 mb-1">
+          {data.category}
+        </div>
+
+        <div className="flex items-center justify-center gap-6 mb-3">
+          <div className="text-base font-semibold text-black">{data.pName}</div>
+          <div className="flex text-yellow-400 text-lg">
+            <FaStar />
+            <FaStar />
+            <FaStar />
+            <FaStar />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center mb-3 gap-10">
+          <div className="text-base font-bold text-black">Rs:{data.price}</div>
+          <button
+            className={`flex items-center gap-2 ${
+              cartBoolean ? "bg-green-500" : "bg-orange-500 hover:bg-orange-600"
+            } text-white font-semibold px-4 py-2 rounded-xl transition-colors`}
+            onClick={handleAddToCart}
+          >
+            <IoCart />
+            {cartBoolean ? "Added to cart" : "Add to cart"}
+          </button>
         </div>
       </div>
-    </div>
+
+      {showModal && (
+        <ProductModal
+          data={data}
+          setShowModal={setShowModal}
+          CartBoolean={cartBoolean}
+          setCartBoolean={setCartBoolean}
+        />
+      )}
+
+      <ConfirmModal
+        isOpen={confirmData.isOpen}
+        title={confirmData.title}
+        message={confirmData.message}
+        onConfirm={confirmData.onConfirm}
+        onCancel={() => setConfirmData((prev) => ({ ...prev, isOpen: false }))}
+      />
+    </>
   );
 };
 
-export default CartCard;
+export default Card;

@@ -1,2 +1,2 @@
-const mainEndPoint = "https://backend-ref5.onrender.com/";
+const mainEndPoint = "https://backend-ref5.onrender.com";
 export default mainEndPoint;

@@ -1,44 +1,56 @@
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { IoCart } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
 import ProductModal from "../Modal/ProductModal";
 import addToCart from "../../LocalStorage/addTocart";
-import { MdDelete } from "react-icons/md";
 import deleteProductApi from "../../Api/Auth/product/deleteProductApi";
+import ConfirmModal from "../../Button/ConformModal";
 
 export const Card = ({ data }) => {
   const userData = JSON.parse(localStorage.getItem("userDetail"));
- 
+
   const [showModal, setShowModal] = useState(false);
   const [cartBoolean, setCartBoolean] = useState(false);
+
+  const [modalData, setModalData] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
     if (!cartBoolean) {
-      addItemtoCart();
+      addToCart(data);
       setCartBoolean(true);
     }
   };
 
-  const addItemtoCart = () => {
-    addToCart(data);
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    setModalData({
+      isOpen: true,
+      title: "Delete Product?",
+      message: `Are you sure you want to delete "${data.pName}"? This action cannot be undone.`,
+      onConfirm: () => {
+        deleteProductApi({ id: data._id });
+        setModalData((prev) => ({ ...prev, isOpen: false }));
+      },
+    });
   };
-  const handleDelete = () => {
-    if(confirm("Are you sure you want to delete the product"))
-    deleteProductApi({id:data._id});
-  };
+
   return (
     <>
       <div
-        className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden m-4 p-4 transition-transform duration-300 hover:scale-105 cursor-pointer relative "
+        className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden m-4 p-4 transition-transform duration-300 hover:scale-105 cursor-pointer relative"
         onClick={() => setShowModal(true)}
       >
-        {userData.role == "admin" && (
+        {userData?.role === "admin" && (
           <div
             className="w-[20px] h-[20px] bg-red-500 rounded-full flex justify-center items-center absolute top-1 right-1"
-            onClick={(e) => {
-              e.stopPropagation(), handleDelete();
-            }}
+            onClick={handleDelete}
           >
             <MdDelete className="text-xl text-white" />
           </div>
@@ -88,6 +100,17 @@ export const Card = ({ data }) => {
           setCartBoolean={setCartBoolean}
         />
       )}
+
+      <ConfirmModal
+        isOpen={modalData.isOpen}
+        title={modalData.title}
+        message={modalData.message}
+        onConfirm={() => {
+          modalData.onConfirm();
+          setModalData((prev) => ({ ...prev, isOpen: false }));
+        }}
+        onCancel={() => setModalData((prev) => ({ ...prev, isOpen: false }))}
+      />
     </>
   );
 };
