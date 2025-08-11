@@ -1,5 +1,5 @@
 import React from "react";
-import StarCalc from "../component/StarCalc";
+import StarCalc from "../Component/StarCalc";
 import { LuDot } from "react-icons/lu";
 import AddToCart from "../../Button/AddToCart";
 import { IoMdArrowRoundBack } from "react-icons/io";
